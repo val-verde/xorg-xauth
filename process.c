@@ -1,4 +1,5 @@
 /* $Xorg: process.c,v 1.6 2001/02/09 02:05:38 xorgcvs Exp $ */
+/* $XdotOrg: $ */
 /*
 
 Copyright 1989, 1998  The Open Group
@@ -675,6 +676,9 @@ register_signals(void)
     signal (SIGTERM, catchsig);
 #ifdef SIGHUP
     signal (SIGHUP, catchsig);
+#endif
+#ifdef SIGPIPE
+    signal (SIGPIPE, catchsig);
 #endif
     return;
 }
