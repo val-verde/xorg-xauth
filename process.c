@@ -26,7 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
-/* $XFree86$ */
+/* $XFree86: xc/programs/xauth/process.c,v 3.24 2004/01/21 23:49:40 herrb Exp $ */
 
 /*
  * Author:  Jim Fulton, MIT X Consortium
