@@ -28,6 +28,7 @@ in this Software without prior written authorization from The Open Group.
  * *
  * Author:  Jim Fulton, MIT X Consortium
  */
+/* $XFree86: xc/programs/xauth/xauth.c,v 1.5 2001/12/14 20:01:15 dawes Exp $ */
 
 #include "xauth.h"
 
@@ -52,7 +53,8 @@ static char *defsource = "(stdin)";
 /*
  * utility routines
  */
-static void usage ()
+static void 
+usage(void)
 {
     static char *prefixmsg[] = {
 "",
@@ -90,9 +92,8 @@ NULL };
 /*
  * The main routine - parses command line and calls action procedures
  */
-main (argc, argv)
-    int argc;
-    char *argv[];
+int
+main(int argc, char *argv[])
 {
     int i;
     char *sourcename = defsource;

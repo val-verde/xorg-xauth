@@ -29,6 +29,8 @@ in this Software without prior written authorization from The Open Group.
  * Author:  Jim Fulton, MIT X Consortium
  */
 
+/* $XFree86: xc/programs/xauth/parsedpy.c,v 3.6 2001/12/14 20:01:15 dawes Exp $ */
+
 #include <stdio.h>			/* for NULL */
 #include <ctype.h>			/* for isascii() and isdigit() */
 #include <X11/Xos.h>			/* for strchr() and string routines */
@@ -39,21 +41,20 @@ in this Software without prior written authorization from The Open Group.
 #include <X11/Xauth.h>			/* for FamilyLocal */
 #include <X11/Xmu/SysUtil.h>
 
-#ifdef UNIXCONN
+#if defined(UNIXCONN) || defined(LOCALCONN)
 #define UNIX_CONNECTION "unix"
 #define UNIX_CONNECTION_LENGTH 4
 #endif
 
-extern char *malloc();
-
+#include <stdlib.h>
+#include "xauth.h"
 
 /*
  * private utility routines
  */
 
-/*static*/ char *copystring (src, len)
-    char *src;
-    int len;
+char *
+copystring (char *src, int len)
 {
     char *cp;
 
@@ -67,9 +68,8 @@ extern char *malloc();
 }
 
 
-char *get_local_hostname (buf, maxlen)
-    char *buf;
-    int maxlen;
+char *
+get_local_hostname (char *buf, int maxlen)
 {
     buf[0] = '\0';
     (void) XmuGetHostname (buf, maxlen);
@@ -77,7 +77,8 @@ char *get_local_hostname (buf, maxlen)
 }
 
 #ifndef UNIXCONN
-static char *copyhostname ()
+static char *
+copyhostname (void)
 {
     char buf[256];
 
@@ -89,12 +90,13 @@ static char *copyhostname ()
 /*
  * parse_displayname - display a display string up into its component parts
  */
-Bool parse_displayname (displayname, familyp, hostp, dpynump, scrnump, restp)
-    char *displayname;
-    int *familyp;			/* return */
-    char **hostp;			/* return */
-    int *dpynump, *scrnump;		/* return */
-    char **restp;			/* return */
+Bool 
+parse_displayname (char *displayname, 
+		   int *familyp,	/* return */
+		   char **hostp,	/* return */
+		   int *dpynump,	/* return */
+		   int *scrnump,	/* return */
+		   char **restp)	/* return */
 {
     char *ptr;				/* work variables */
     int len;				/* work variable */
@@ -123,7 +125,7 @@ Bool parse_displayname (displayname, familyp, hostp, dpynump, scrnump, restp)
 
     len = (ptr - displayname);	/* length of host name */
     if (len == 0) {			/* choose most efficient path */
-#ifdef UNIXCONN
+#if defined(UNIXCONN) || defined(LOCALCONN)
 	host = copystring (UNIX_CONNECTION, UNIX_CONNECTION_LENGTH);
 	family = FamilyLocal;
 #else
@@ -140,7 +142,7 @@ Bool parse_displayname (displayname, familyp, hostp, dpynump, scrnump, restp)
 	if (dnet) {
 	    family = dnet;
 	} else {
-#ifdef UNIXCONN
+#if defined(UNIXCONN) || defined(LOCALCONN)
 	    if (host && strcmp (host, UNIX_CONNECTION) == 0)
 	      family = FamilyLocal;
 	    else

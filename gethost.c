@@ -27,6 +27,8 @@ in this Software without prior written authorization from The Open Group.
  * Author:  Jim Fulton, MIT X Consortium
  */
 
+/* $XFree86: xc/programs/xauth/gethost.c,v 3.16 2001/12/14 20:01:14 dawes Exp $ */
+
 /* sorry, streams support does not really work yet */
 #if defined(STREAMSCONN) && defined(SVR4)
 #undef STREAMSCONN
@@ -37,7 +39,6 @@ in this Software without prior written authorization from The Open Group.
 #include <X11/Xwinsock.h>
 #define EPROTOTYPE WSAEPROTOTYPE
 #endif
-#include "xauth.h"
 #include <X11/X.h>
 #include <signal.h>
 #include <setjmp.h>
@@ -48,9 +49,14 @@ in this Software without prior written authorization from The Open Group.
 #endif
 #ifndef WIN32
 #ifndef STREAMSCONN
+#ifndef Lynx
 #include <sys/socket.h>
+#else
+#include <socket.h>
+#endif
 #include <netdb.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #ifdef SYSV
 #ifdef i386
 #ifndef sco
@@ -61,9 +67,7 @@ in this Software without prior written authorization from The Open Group.
 #endif /* !STREAMSCONN */
 #endif /* !WIN32 */
 #include <errno.h>
-#ifdef X_NOT_STDC_ENV
-extern int errno;
-#endif
+#include "xauth.h"
 
 #ifdef DNETCONN
 #include <netdnet/dn.h>
@@ -87,7 +91,7 @@ int
 #else
 void
 #endif
-nameserver_lost(sig)
+nameserver_lost(int sig)
 {
   nameserver_timedout = True;
   longjmp (env, -1);
@@ -98,13 +102,11 @@ nameserver_lost(sig)
 }
 #endif
 
-char *get_hostname (auth)
+char *
+get_hostname (auth)
     Xauth *auth;
 {
-    struct hostent *hp = NULL;
-#ifndef WIN32
-    char *inet_ntoa();
-#endif
+    static struct hostent *hp = NULL;
 #ifdef DNETCONN
     struct nodeent *np;
     static char nodeaddr[4 + 2 * DN_MAXADDL];
@@ -157,15 +159,18 @@ char *get_hostname (auth)
 /*
  * cribbed from lib/X/XConnDis.c
  */
-static Bool get_inet_address (name, resultp)
-    char *name;
-    unsigned long *resultp;		/* return */
+static Bool 
+get_inet_address(char *name, unsigned int *resultp)
 {
-    unsigned long hostinetaddr = inet_addr (name);
+    unsigned int hostinetaddr = inet_addr (name);
     struct hostent *host_ptr;
     struct sockaddr_in inaddr;		/* dummy variable for size calcs */
 
-    if (hostinetaddr == -1) {		/* oh, gross.... */
+#ifndef INADDR_NONE
+#define INADDR_NONE -1
+#endif
+
+    if (hostinetaddr == INADDR_NONE) {
 	if ((host_ptr = gethostbyname (name)) == NULL) {
 	    /* No such host! */
 	    errno = EINVAL;
@@ -217,7 +222,7 @@ char *get_address_info (family, fulldpyname, prefix, host, lenp)
     int len = 0;
     char *src = NULL;
 #ifdef TCPCONN
-    unsigned long hostinetaddr;
+    unsigned int hostinetaddr;
 #endif
 #ifdef DNETCONN
     struct dn_naddr dnaddr;
@@ -233,7 +238,6 @@ char *get_address_info (family, fulldpyname, prefix, host, lenp)
 					/* handle unix:0 and :0 specially */
 	if (prefix == 0 && (strncmp (fulldpyname, "unix:", 5) == 0 ||
 			    fulldpyname[0] == ':')) {
-	    extern char *get_local_hostname();
 
 	    if (!get_local_hostname (buf, sizeof buf)) {
 		len = 0;
