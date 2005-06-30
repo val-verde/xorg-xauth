@@ -32,7 +32,7 @@ AC_PROG_CC
 AC_PROG_INSTALL
 
 # Checks for pkg-config packages
-PKG_CHECK_MODULES(DEP, x11 xext xmu)
+PKG_CHECK_MODULES(DEP, x11 xau xext xmu)
 AC_SUBST(DEP_CFLAGS)
 AC_SUBST(DEP_LIBS)
 
