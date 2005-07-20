@@ -21,8 +21,8 @@
 
 bin_PROGRAMS = xauth
 
-xauth_CFLAGS = $(DEP_CFLAGS)
-xauth_LDADD = $(DEP_LIBS)
+xauth_CFLAGS = $(XAUTH_CFLAGS)
+xauth_LDADD = $(XAUTH_LIBS)
 
 xauth_SOURCES =	\
         gethost.c \
