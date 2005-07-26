@@ -31,9 +31,15 @@ AM_CONFIG_HEADER(config.h)
 AC_PROG_CC
 AC_PROG_INSTALL
 
+AC_TYPE_SIGNAL
+
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XAUTH, x11 xau xext xmu)
 AC_SUBST(XAUTH_CFLAGS)
 AC_SUBST(XAUTH_LIBS)
+
+# Transport selection macro from xtrans.m4
+# Needed to set *CONN defines for gethost.c & parsedpy.c 
+XTRANS_CONNECTION_FLAGS
 
 AC_OUTPUT([Makefile])
