@@ -31,6 +31,5 @@ xauth_SOURCES =	\
         xauth.c \
         xauth.h
 
-dist_man_MANS = \
+dist_man1_MANS = \
         xauth.man
-
