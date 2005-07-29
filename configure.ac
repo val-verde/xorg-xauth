@@ -22,7 +22,7 @@ dnl
 dnl Process this file with autoconf to create configure.
 
 AC_PREREQ([2.57])
-AC_INIT(xauth,[7.0], [xorg@freedestkop.org],xauth)
+AC_INIT(xauth,[0.99.0], [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],xauth)
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
 
@@ -41,5 +41,7 @@ AC_SUBST(XAUTH_LIBS)
 # Transport selection macro from xtrans.m4
 # Needed to set *CONN defines for gethost.c & parsedpy.c 
 XTRANS_CONNECTION_FLAGS
+
+XORG_RELEASE_VERSION
 
 AC_OUTPUT([Makefile])
