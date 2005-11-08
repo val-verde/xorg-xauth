@@ -63,9 +63,9 @@ in this Software without prior written authorization from The Open Group.
 #include <arpa/inet.h>
 #ifdef SYSV
 #ifdef i386
-#if !defined(sco) && !defined(sun)
+#if !defined(SCO325) && !defined(sun)
 #include <net/errno.h>
-#endif /* !sco && !sun */
+#endif /* !SCO325 && !sun */
 #endif /* i386 */
 #endif /* SYSV */
 #endif /* !STREAMSCONN */
