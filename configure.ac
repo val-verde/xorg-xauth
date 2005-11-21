@@ -34,7 +34,7 @@ AC_PROG_INSTALL
 AC_TYPE_SIGNAL
 
 # Checks for pkg-config packages
-PKG_CHECK_MODULES(XAUTH, x11 xau xext xmu)
+PKG_CHECK_MODULES(XAUTH, x11 xau xext xmuu)
 AC_SUBST(XAUTH_CFLAGS)
 AC_SUBST(XAUTH_LIBS)
 
