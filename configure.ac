@@ -37,6 +37,8 @@ AC_PROG_INSTALL
 
 AC_TYPE_SIGNAL
 
+AC_CHECK_HEADERS([net/errno.h])
+
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XAUTH, x11 xau xext xmuu)
 AC_SUBST(XAUTH_CFLAGS)

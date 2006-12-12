@@ -61,13 +61,9 @@ in this Software without prior written authorization from The Open Group.
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#ifdef SYSV
-#ifdef i386
-#if !defined(SCO325) && !defined(sun)
+#ifdef HAVE_NET_ERRNO_H
 #include <net/errno.h>
-#endif /* !SCO325 && !sun */
-#endif /* i386 */
-#endif /* SYSV */
+#endif /* HAVE_NET_ERRNO_H */
 #endif /* !STREAMSCONN */
 #endif /* !WIN32 */
 #include <errno.h>
