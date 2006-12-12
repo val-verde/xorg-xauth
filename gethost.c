@@ -115,8 +115,7 @@ nameserver_lost(int sig)
 #endif
 
 char *
-get_hostname (auth)
-    Xauth *auth;
+get_hostname (Xauth *auth)
 {
     static struct hostent *hp;
     int af;
