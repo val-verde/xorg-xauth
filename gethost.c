@@ -88,15 +88,6 @@ static volatile Bool nameserver_timedout = False;
  * be found.  Stolen from xhost.
  */
 
-/* defined by autoconf AC_TYPE_SIGNAL, need to define for Imake */
-#ifndef RETSIGTYPE 
-# ifdef SIGNALRETURNSINT
-#  define RETSIGTYPE int
-# else
-#  define RETSIGTYPE void
-# endif
-#endif
-
 static jmp_buf env;
 static RETSIGTYPE
 nameserver_lost(int sig)
