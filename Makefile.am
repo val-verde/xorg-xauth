@@ -21,7 +21,7 @@
 
 bin_PROGRAMS = xauth
 
-xauth_CFLAGS = $(XAUTH_CFLAGS)
+AM_CFLAGS = $(XAUTH_CFLAGS)
 xauth_LDADD = $(XAUTH_LIBS)
 
 xauth_SOURCES =	\
