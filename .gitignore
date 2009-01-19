@@ -18,3 +18,7 @@ stamp-h1
 xauth
 xauth.1
 *~
+*.o
+xauth-*.tar.*
+ChangeLog
+tags
