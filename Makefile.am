@@ -21,7 +21,7 @@
 
 bin_PROGRAMS = xauth
 
-AM_CFLAGS = $(XAUTH_CFLAGS)
+AM_CFLAGS = $(CWARNFLAGS) $(XAUTH_CFLAGS)
 xauth_LDADD = $(XAUTH_LIBS)
 
 xauth_SOURCES =	\
@@ -43,7 +43,7 @@ CLEANFILES = $(appman_DATA)
 
 if LINT
 ALL_LINT_FLAGS=$(LINT_FLAGS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-                $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(xauth_CFLAGS)
+                $(AM_CPPFLAGS) $(CPPFLAGS) $(XAUTH_CFLAGS)
 
 lint:
 	$(LINT) $(ALL_LINT_FLAGS) $(xauth_SOURCES) $(xauth_LDADD)
