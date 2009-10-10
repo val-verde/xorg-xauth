@@ -769,7 +769,7 @@ auth_initialize(char *authfilename)
 	    return -1;
 	}				/* else ignore it */
 	fprintf (stderr, 
-		 "%s:  creating new authority file %s\n",
+		 "%s:  file %s does not exist\n",
 		 ProgramName, authfilename);
     } else {
 	xauth_existed = True;
