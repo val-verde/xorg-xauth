@@ -283,7 +283,13 @@ struct addrlist *get_address_info (
 	} else if(prefix == 0 && (strncmp (fulldpyname, "/tmp/launch", 11) == 0)) {
         /* Use the bundle id (part preceding : in the basename) as our src id */
         char *c;
+#ifdef HAVE_STRLCPY
         strlcpy(buf, strrchr(fulldpyname, '/') + 1, sizeof(buf));
+#else
+        strncpy(buf, strrchr(fulldpyname, '/') + 1, sizeof(buf));
+	buf[sizeof(buf) - 1] = '\0';
+#endif
+
         c = strchr(buf, ':');
         
         /* In the legacy case with no bundle id, use the full path */

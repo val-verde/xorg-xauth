@@ -36,10 +36,11 @@ XORG_DEFAULT_OPTIONS
 AC_PROG_CC
 AC_PROG_INSTALL
 
-
 AC_TYPE_SIGNAL
 
 AC_CHECK_HEADERS([net/errno.h])
+
+AC_CHECK_FUNCS([strlcpy])
 
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XAUTH, x11 xau xext xmuu)
