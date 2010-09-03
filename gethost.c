@@ -74,29 +74,6 @@ in this Software without prior written authorization from The Open Group.
 #include <arpa/inet.h>
 #endif
 
-#ifdef SIGALRM
-static volatile Bool nameserver_timedout = False;
-
-
-/*
- * get_hostname - Given an internet address, return a name (CHARON.MIT.EDU)
- * or a string representing the address (18.58.0.13) if the name cannot
- * be found.  Stolen from xhost.
- */
-
-static jmp_buf env;
-static RETSIGTYPE
-nameserver_lost(int sig)
-{
-  nameserver_timedout = True;
-  longjmp (env, -1);
-  /* NOTREACHED */
-#ifdef SIGNALRETURNSINT
-  return -1;				/* for picky compilers */
-#endif
-}
-#endif
-
 const char *
 get_hostname (Xauth *auth)
 {
@@ -124,23 +101,7 @@ get_hostname (Xauth *auth)
 #endif
 	    af = AF_INET;
 	if (no_name_lookups == False) {
-#ifdef SIGALRM
-	/* gethostbyaddr can take a LONG time if the host does not exist.
-	   Assume that if it does not respond in NAMESERVER_TIMEOUT seconds
-	   that something is wrong and do not make the user wait.
-	   gethostbyaddr will continue after a signal, so we have to
-	   jump out of it.
-	   */
-	nameserver_timedout = False;
-	signal (SIGALRM, nameserver_lost);
-	alarm (4);
-	if (setjmp(env) == 0) {
-#endif
 	    hp = gethostbyaddr (auth->address, auth->address_length, af);
-#ifdef SIGALRM
-	}
-	alarm (0);
-#endif
 	}
 	if (hp)
 	  return (hp->h_name);
