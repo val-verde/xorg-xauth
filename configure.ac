@@ -33,9 +33,6 @@ m4_ifndef([XORG_MACROS_VERSION],
 XORG_MACROS_VERSION(1.3)
 XORG_DEFAULT_OPTIONS
 
-AC_PROG_CC
-AC_PROG_INSTALL
-
 AC_TYPE_SIGNAL
 
 AC_CHECK_HEADERS([net/errno.h])
@@ -44,8 +41,6 @@ AC_CHECK_FUNCS([strlcpy])
 
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XAUTH, x11 xau xext xmuu)
-AC_SUBST(XAUTH_CFLAGS)
-AC_SUBST(XAUTH_LIBS)
 
 # Transport selection macro from xtrans.m4
 # Needed to set *CONN defines for gethost.c & parsedpy.c 
