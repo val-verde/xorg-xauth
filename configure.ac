@@ -51,4 +51,7 @@ XTRANS_CONNECTION_FLAGS
 
 XORG_WITH_LINT
 
-AC_OUTPUT([Makefile])
+AC_CONFIG_FILES([
+	Makefile
+	man/Makefile])
+AC_OUTPUT
