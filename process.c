@@ -558,8 +558,8 @@ cvthexkey(char *hexstr, char **ptrp)	/* turn hex key string into octets */
 	len++;
     }
 
-    /* if odd then there was an error */
-    if ((len & 1) == 1) return -1;
+    /* if 0 or odd, then there was an error */
+    if (len == 0 || (len & 1) == 1) return -1;
 
 
     /* now we know that the input is good */
