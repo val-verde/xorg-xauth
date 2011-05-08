@@ -888,7 +888,8 @@ auth_finalize(void)
 #if defined(WIN32) || defined(__UNIXOS2__)
 		if (rename(temp_name, xauth_filename) == -1)
 #else
-		if (link (temp_name, xauth_filename) == -1)
+		/* Attempt to rename() if link() fails, since this may be on a FS that does not support hard links */
+		if (link (temp_name, xauth_filename) == -1 && rename(temp_name, xauth_filename) == -1)
 #endif
 		{
 		    fprintf (stderr,
