@@ -22,7 +22,7 @@ dnl Process this file with autoconf to create configure.
 
 AC_PREREQ([2.60])
 AC_INIT([xauth],
-	[1.0.5],
+	[1.0.6],
 	[https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
 	[xauth])
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
