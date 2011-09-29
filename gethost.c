@@ -1,5 +1,5 @@
 /*
- * 
+ *
 Copyright 1989, 1998  The Open Group
 
 Permission to use, copy, modify, distribute, and sell this software and its
@@ -114,7 +114,7 @@ get_hostname (Xauth *auth)
     if (auth->family == FamilyInternet
 #if defined(IPv6) && defined(AF_INET6)
       || auth->family == FamilyInternet6
-#endif 
+#endif
 	)
     {
 #if defined(IPv6) && defined(AF_INET6)
@@ -129,7 +129,7 @@ get_hostname (Xauth *auth)
 	   Assume that if it does not respond in NAMESERVER_TIMEOUT seconds
 	   that something is wrong and do not make the user wait.
 	   gethostbyaddr will continue after a signal, so we have to
-	   jump out of it. 
+	   jump out of it.
 	   */
 	nameserver_timedout = False;
 	signal (SIGALRM, nameserver_lost);
@@ -184,7 +184,7 @@ get_hostname (Xauth *auth)
 /*
  * cribbed from lib/X/XConnDis.c
  */
-static Bool 
+static Bool
 get_inet_address(char *name, unsigned int *resultp)
 {
     unsigned int hostinetaddr = inet_addr (name);
@@ -207,8 +207,8 @@ get_inet_address(char *name, unsigned int *resultp)
 	    errno = EPROTOTYPE;
 	    return False;
 	}
- 
-	memmove( (char *)&hostinetaddr, (char *)host_ptr->h_addr, 
+
+	memmove( (char *)&hostinetaddr, (char *)host_ptr->h_addr,
 	      sizeof(inaddr.sin_addr));
     }
     *resultp = hostinetaddr;
@@ -287,7 +287,7 @@ struct addrlist *get_address_info (
 #endif
 
         c = strchr(buf, ':');
-        
+
         /* In the legacy case with no bundle id, use the full path */
         if(c == buf) {
             src = fulldpyname;
@@ -309,7 +309,7 @@ struct addrlist *get_address_info (
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = PF_UNSPEC; /* IPv4 or IPv6 */
 	hints.ai_socktype = SOCK_STREAM; /* only interested in TCP */
-	hints.ai_protocol = 0;	
+	hints.ai_protocol = 0;
         if (getaddrinfo(host,NULL,&hints,&firstai) !=0) return NULL;
 	for (ai = firstai; ai != NULL; ai = ai->ai_next) {
 	    struct addrlist *duplicate;

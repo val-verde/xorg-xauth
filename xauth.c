@@ -2,7 +2,7 @@
  *
  * xauth - manipulate authorization file
  *
- * 
+ *
 Copyright 1989,1998  The Open Group
 
 Permission to use, copy, modify, distribute, and sell this software and its
@@ -56,7 +56,7 @@ static char *defsource = "(stdin)";
 /*
  * utility routines
  */
-static void 
+static void
 usage(void)
 {
     static char *prefixmsg[] = {

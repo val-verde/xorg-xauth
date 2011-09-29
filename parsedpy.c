@@ -2,7 +2,7 @@
  *
  * parse_displayname - utility routine for splitting up display name strings
  *
- * 
+ *
 Copyright 1989, 1998  The Open Group
 
 Permission to use, copy, modify, distribute, and sell this software and its
@@ -83,7 +83,7 @@ copyhostname (void)
 {
     char buf[256];
 
-    return (get_local_hostname (buf, sizeof buf) ? 
+    return (get_local_hostname (buf, sizeof buf) ?
 	    copystring (buf, strlen (buf)) : NULL);
 }
 #endif
@@ -91,8 +91,8 @@ copyhostname (void)
 /*
  * parse_displayname - display a display string up into its component parts
  */
-Bool 
-parse_displayname (char *displayname, 
+Bool
+parse_displayname (char *displayname,
 		   int *familyp,	/* return */
 		   char **hostp,	/* return */
 		   int *dpynump,	/* return */
@@ -180,7 +180,7 @@ parse_displayname (char *displayname,
 	    free (host);
 	    return False;
 	}
-	
+
 	dpynum = atoi (ptr);		/* it will handle num. as well */
 	ptr = cp;
     }
@@ -232,4 +232,4 @@ parse_displayname (char *displayname,
     return True;
 }
 
-	    
+
