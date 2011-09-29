@@ -778,10 +778,8 @@ auth_initialize(char *authfilename)
 	xauth_head = head;
     }
 
-    n = strlen (authfilename);
-    xauth_filename = malloc (n + 1);
-    if (xauth_filename) strcpy (xauth_filename, authfilename);
-    else {
+    xauth_filename = strdup(authfilename);
+    if (!xauth_filename) {
 	fprintf(stderr,"cannot allocate memory\n");
 	return -1;
     }
