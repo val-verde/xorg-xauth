@@ -97,7 +97,7 @@ nameserver_lost(int sig)
 }
 #endif
 
-char *
+const char *
 get_hostname (Xauth *auth)
 {
     static struct hostent *hp;
@@ -238,13 +238,13 @@ static Bool get_dnet_address (name, resultp)
 
 struct addrlist *get_address_info (
     int family,
-    char *fulldpyname,
+    const char *fulldpyname,
     int prefix,
     char *host)
 {
     struct addrlist *retval = NULL;
     int len = 0;
-    void *src = NULL;
+    const void *src = NULL;
 #ifdef TCPCONN
 #if defined(IPv6) && defined(AF_INET6)
     struct addrlist *lastrv = NULL;

@@ -65,25 +65,25 @@ typedef struct _AuthList {		/* linked list of entries */
     Xauth *auth;
 } AuthList;
 
-typedef int (*ProcessFunc)(char *, int, int, char**);
+typedef int (*ProcessFunc)(const char *, int, int, const char**);
 
 #define add_to_list(h,t,e) {if (t) (t)->next = (e); else (h) = (e); (t) = (e);}
 
 typedef struct _CommandTable {		/* commands that are understood */
-    char *name;				/* full name */
+    const char *name;			/* full name */
     int minlen;				/* unique prefix */
     int maxlen;				/* strlen(name) */
     ProcessFunc processfunc;		/* handler */
-    char *helptext;			/* what to print for help */
+    const char *helptext;		/* what to print for help */
 } CommandTable;
 
 struct _extract_data {			/* for iterating */
     FILE *fp;				/* input source */
-    char *filename;			/* name of input */
+    const char *filename;		/* name of input */
     Bool used_stdout;			/* whether or not need to close */
     Bool numeric;			/* format in which to write */
     int nwritten;			/* number of entries written */
-    char *cmd;				/* for error messages */
+    const char *cmd;			/* for error messages */
 };
 
 struct _list_data {			/* for iterating */
@@ -95,23 +95,23 @@ struct _list_data {			/* for iterating */
 /*
  * private data
  */
-static char *stdin_filename = "(stdin)";  /* for messages */
-static char *stdout_filename = "(stdout)";  /* for messages */
-static char *Yes = "yes";		/* for messages */
-static char *No = "no";			/* for messages */
+static const char *stdin_filename = "(stdin)";		/* for messages */
+static const char *stdout_filename = "(stdout)";	/* for messages */
+static const char *Yes = "yes";		/* for messages */
+static const char *No = "no";		/* for messages */
 
-static int do_help ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_questionmark ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_list ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_merge ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_extract ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_add ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_remove ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_info ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_exit ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_quit ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_source ( char *inputfilename, int lineno, int argc, char **argv );
-static int do_generate ( char *inputfilename, int lineno, int argc, char **argv );
+static int do_help ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_questionmark ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_list ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_merge ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_extract ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_add ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_remove ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_info ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_exit ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_quit ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_source ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_generate ( const char *inputfilename, int lineno, int argc, const char **argv );
 
 static CommandTable command_table[] = {	/* table of known commands */
     { "add",      2, 3, do_add,
@@ -159,7 +159,7 @@ static CommandTable command_table[] = {	/* table of known commands */
 
 static Bool okay_to_use_stdin = True;	/* set to false after using */
 
-static char *hex_table[] = {		/* for printing hex digits */
+static const char *hex_table[] = {	/* for printing hex digits */
     "00", "01", "02", "03", "04", "05", "06", "07",
     "08", "09", "0a", "0b", "0c", "0d", "0e", "0f",
     "10", "11", "12", "13", "14", "15", "16", "17",
@@ -204,20 +204,20 @@ static int original_umask = 0;		/* for restoring */
  */
 
 static void
-prefix(char *fn, int n)
+prefix(const char *fn, int n)
 {
     fprintf (stderr, "%s: %s:%d:  ", ProgramName, fn, n);
 }
 
 static void
-baddisplayname(char *dpy, char *cmd)
+baddisplayname(const char *dpy, const char *cmd)
 {
     fprintf (stderr, "bad display name \"%s\" in \"%s\" command\n",
 	     dpy, cmd);
 }
 
 static void
-badcommandline(char *cmd)
+badcommandline(const char *cmd)
 {
     fprintf (stderr, "bad \"%s\" command line\n", cmd);
 }
@@ -286,12 +286,12 @@ split_into_words(char *src, int *argcp)  /* argvify string */
 
 
 static FILE *
-open_file(char **filenamep,
-	  char *mode,
+open_file(const char **filenamep,
+	  const char *mode,
 	  Bool *usedstdp,
-	  char *srcfn,
+	  const char *srcfn,
 	  int srcln,
-	  char *cmd)
+	  const char *cmd)
 {
     FILE *fp;
 
@@ -463,7 +463,7 @@ read_auth_entries(FILE *fp, Bool numeric, AuthList **headp, AuthList **tailp)
 }
 
 static Bool
-get_displayname_auth(char *displayname, AuthList **authl)
+get_displayname_auth(const char *displayname, AuthList **authl)
 {
     int family;
     char *host = NULL, *rest = NULL;
@@ -541,11 +541,12 @@ get_displayname_auth(char *displayname, AuthList **authl)
 }
 
 static int
-cvthexkey(char *hexstr, char **ptrp)	/* turn hex key string into octets */
+cvthexkey(const char *hexstr, char **ptrp) /* turn hex key string into octets */
 {
     int i;
     int len = 0;
-    char *retval, *s;
+    char *retval;
+    const char *s;
     unsigned char *us;
     char c;
     char savec = '\0';
@@ -592,15 +593,15 @@ cvthexkey(char *hexstr, char **ptrp)	/* turn hex key string into octets */
 }
 
 static int
-dispatch_command(char *inputfilename,
+dispatch_command(const char *inputfilename,
 		 int lineno,
 		 int argc,
-		 char **argv,
+		 const char **argv,
 		 CommandTable *tab,
 		 int *statusp)
 {
     CommandTable *ct;
-    char *cmd;
+    const char *cmd;
     int n;
 					/* scan table for command */
     cmd = argv[0];
@@ -624,7 +625,7 @@ static Bool xauth_existed = False;	/* if was present at initialize */
 static Bool xauth_modified = False;	/* if added, removed, or merged */
 static Bool xauth_allowed = True;	/* if allowed to write auth file */
 static Bool xauth_locked = False;     /* if has been locked */
-static char *xauth_filename = NULL;
+static const char *xauth_filename = NULL;
 static volatile Bool dieing = False;
 
 
@@ -685,7 +686,7 @@ register_signals(void)
  */
 
 int
-auth_initialize(char *authfilename)
+auth_initialize(const char *authfilename)
 {
     int n;
     AuthList *head, *tail;
@@ -726,7 +727,7 @@ auth_initialize(char *authfilename)
 			 XAUTH_DEFAULT_TIMEOUT,
 			 (break_locks ? 0L : XAUTH_DEFAULT_DEADTIME));
 	if (n != LOCK_SUCCESS) {
-	    char *reason = "unknown error";
+	    const char *reason = "unknown error";
 	    switch (n) {
 	      case LOCK_ERROR:
 		reason = "error";
@@ -908,7 +909,7 @@ auth_finalize(void)
 }
 
 int
-process_command(char *inputfilename, int lineno, int argc, char **argv)
+process_command(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     int status;
 
@@ -929,7 +930,7 @@ process_command(char *inputfilename, int lineno, int argc, char **argv)
  */
 
 static char *
-bintohex(unsigned int len, char *bindata)
+bintohex(unsigned int len, const char *bindata)
 {
     char *hexdata, *starthex;
 
@@ -939,7 +940,7 @@ bintohex(unsigned int len, char *bindata)
 	return NULL;
 
     for (; len > 0; len--, bindata++) {
-	register char *s = hex_table[(unsigned char)*bindata];
+	register const char *s = hex_table[(unsigned char)*bindata];
 	*hexdata++ = s[0];
 	*hexdata++ = s[1];
     }
@@ -975,7 +976,7 @@ dump_numeric(register FILE *fp, register Xauth *auth)
 
 /* ARGSUSED */
 static int
-dump_entry(char *inputfilename, int lineno, Xauth *auth, char *data)
+dump_entry(const char *inputfilename, int lineno, Xauth *auth, char *data)
 {
     struct _list_data *ld = (struct _list_data *) data;
     FILE *fp = ld->fp;
@@ -983,7 +984,7 @@ dump_entry(char *inputfilename, int lineno, Xauth *auth, char *data)
     if (ld->numeric) {
 	dump_numeric (fp, auth);
     } else {
-	char *dpyname = NULL;
+	const char *dpyname = NULL;
 
 	switch (auth->family) {
 	  case FamilyLocal:
@@ -1024,7 +1025,7 @@ dump_entry(char *inputfilename, int lineno, Xauth *auth, char *data)
 }
 
 static int
-extract_entry(char *inputfilename, int lineno, Xauth *auth, char *data)
+extract_entry(const char *inputfilename, int lineno, Xauth *auth, char *data)
 {
     struct _extract_data *ed = (struct _extract_data *) data;
 
@@ -1203,11 +1204,11 @@ copyAuth(Xauth *auth)
     return a;
 }
 
-typedef int (*YesNoFunc)(char *, int, Xauth *, char *);
+typedef int (*YesNoFunc)(const char *, int, Xauth *, char *);
 
 static int
-iterdpy (char *inputfilename, int lineno, int start,
-	 int argc, char *argv[],
+iterdpy (const char *inputfilename, int lineno, int start,
+	 int argc, const char *argv[],
 	 YesNoFunc yfunc, YesNoFunc nfunc, char *data)
 {
     int i;
@@ -1221,7 +1222,7 @@ iterdpy (char *inputfilename, int lineno, int start,
      * iterate
      */
     for (i = start; i < argc; i++) {
-	char *displayname = argv[i];
+	const char *displayname = argv[i];
 	if (!get_displayname_auth (displayname, &proto_head)) {
 	    prefix (inputfilename, lineno);
 	    baddisplayname (displayname, argv[0]);
@@ -1272,7 +1273,7 @@ iterdpy (char *inputfilename, int lineno, int start,
 
 /* ARGSUSED */
 static int
-remove_entry(char *inputfilename, int lineno, Xauth *auth, char *data)
+remove_entry(const char *inputfilename, int lineno, Xauth *auth, char *data)
 {
     int *nremovedp = (int *) data;
     AuthList **listp = &xauth_head;
@@ -1299,7 +1300,7 @@ remove_entry(char *inputfilename, int lineno, Xauth *auth, char *data)
  * help
  */
 int
-print_help(FILE *fp, char *cmd, char *prefix)
+print_help(FILE *fp, const char *cmd, const char *prefix)
 {
     CommandTable *ct;
     int n = 0;
@@ -1325,9 +1326,9 @@ print_help(FILE *fp, char *cmd, char *prefix)
 }
 
 static int
-do_help(char *inputfilename, int lineno, int argc, char **argv)
+do_help(const char *inputfilename, int lineno, int argc, const char **argv)
 {
-    char *cmd = (argc > 1 ? argv[1] : NULL);
+    const char *cmd = (argc > 1 ? argv[1] : NULL);
     int n;
 
     n = print_help (stdout, cmd, "    ");  /* a nice amount */
@@ -1356,7 +1357,7 @@ do_help(char *inputfilename, int lineno, int argc, char **argv)
  */
 /* ARGSUSED */
 static int
-do_questionmark(char *inputfilename, int lineno, int argc, char **argv)
+do_questionmark(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     CommandTable *ct;
     int i;
@@ -1391,7 +1392,7 @@ do_questionmark(char *inputfilename, int lineno, int argc, char **argv)
  * list [displayname ...]
  */
 static int
-do_list (char *inputfilename, int lineno, int argc, char **argv)
+do_list (const char *inputfilename, int lineno, int argc, const char **argv)
 {
     struct _list_data ld;
 
@@ -1417,7 +1418,7 @@ do_list (char *inputfilename, int lineno, int argc, char **argv)
  * merge filename [filename ...]
  */
 static int
-do_merge(char *inputfilename, int lineno, int argc, char **argv)
+do_merge(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     int i;
     int errors = 0;
@@ -1435,7 +1436,7 @@ do_merge(char *inputfilename, int lineno, int argc, char **argv)
     listhead = listtail = NULL;
 
     for (i = 1; i < argc; i++) {
-	char *filename = argv[i];
+	const char *filename = argv[i];
 	FILE *fp;
 	Bool used_stdin = False;
 
@@ -1480,7 +1481,7 @@ do_merge(char *inputfilename, int lineno, int argc, char **argv)
  * extract filename displayname [displayname ...]
  */
 static int
-do_extract(char *inputfilename, int lineno, int argc, char **argv)
+do_extract(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     int errors;
     struct _extract_data ed;
@@ -1522,14 +1523,15 @@ do_extract(char *inputfilename, int lineno, int argc, char **argv)
 /*
  * add displayname protocolname hexkey
  */
+
 static int
-do_add(char *inputfilename, int lineno, int argc, char **argv)
+do_add(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     int n, nnew, nrepl;
     int len;
-    char *dpyname;
-    char *protoname;
-    char *hexkey;
+    const char *dpyname;
+    const char *protoname;
+    const char *hexkey;
     char *key;
     AuthList *list, *list_cur, *list_next;
 
@@ -1627,7 +1629,7 @@ do_add(char *inputfilename, int lineno, int argc, char **argv)
  * remove displayname
  */
 static int
-do_remove(char *inputfilename, int lineno, int argc, char **argv)
+do_remove(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     int nremoved = 0;
     int errors;
@@ -1648,7 +1650,7 @@ do_remove(char *inputfilename, int lineno, int argc, char **argv)
  * info
  */
 static int
-do_info(char *inputfilename, int lineno, int argc, char **argv)
+do_info(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     int n;
     AuthList *l;
@@ -1680,7 +1682,7 @@ static Bool alldone = False;
 
 /* ARGSUSED */
 static int
-do_exit(char *inputfilename, int lineno, int argc, char **argv)
+do_exit(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     /* allow bogus stuff */
     alldone = True;
@@ -1692,7 +1694,7 @@ do_exit(char *inputfilename, int lineno, int argc, char **argv)
  */
 /* ARGSUSED */
 static int
-do_quit(char *inputfilename, int lineno, int argc, char **argv)
+do_quit(const char *inputfilename, int lineno, int argc, const char **argv)
 {
     /* allow bogus stuff */
     die (0);
@@ -1705,16 +1707,16 @@ do_quit(char *inputfilename, int lineno, int argc, char **argv)
  * source filename
  */
 static int
-do_source(char *inputfilename, int lineno, int argc, char **argv)
+do_source(const char *inputfilename, int lineno, int argc, const char **argv)
 {
-    char *script;
+    const char *script;
     char buf[BUFSIZ];
     FILE *fp;
     Bool used_stdin = False;
     int len;
     int errors = 0, status;
     int sublineno = 0;
-    char **subargv;
+    const char **subargv;
     int subargc;
     Bool prompt = False;		/* only true if reading from tty */
 
@@ -1750,10 +1752,10 @@ do_source(char *inputfilename, int lineno, int argc, char **argv)
 	    break;
 	}
 	buf[--len] = '\0';		/* remove new line */
-	subargv = split_into_words (buf, &subargc);
+	subargv = (const char **) split_into_words (buf, &subargc);
 	if (subargv) {
 	    status = process_command (script, sublineno, subargc, subargv);
-	    free ((char *) subargv);
+	    free (subargv);
 	    errors += status;
 	} else {
 	    prefix (script, sublineno);
@@ -1783,9 +1785,9 @@ catch_x_protocol_error(Display *dpy, XErrorEvent *errevent)
  * generate
  */
 static int
-do_generate(char *inputfilename, int lineno, int argc, char **argv)
+do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 {
-    char *displayname;
+    const char *displayname;
     int major_version, minor_version;
     XSecurityAuthorization id_return;
     Xauth *auth_in, *auth_return;
@@ -1793,11 +1795,11 @@ do_generate(char *inputfilename, int lineno, int argc, char **argv)
     unsigned long attrmask = 0;
     Display *dpy;
     int status;
-    char *args[4];
-    char *protoname = ".";
+    const char *args[4];
+    const char *protoname = ".";
     int i;
     int authdatalen = 0;
-    char *hexdata;
+    const char *hexdata;
     char *authdata = NULL;
 
     if (argc < 2 || !argv[1]) {
@@ -1925,7 +1927,7 @@ do_generate(char *inputfilename, int lineno, int argc, char **argv)
     if (authdata) free(authdata);
     XSecurityFreeXauth(auth_in);
     XSecurityFreeXauth(auth_return);
-    free(args[3]); /* hex data */
+    free((char *) args[3]); /* hex data */
     XCloseDisplay(dpy);
     return status;
 }

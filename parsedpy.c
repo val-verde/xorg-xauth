@@ -55,7 +55,7 @@ in this Software without prior written authorization from The Open Group.
  */
 
 char *
-copystring (char *src, int len)
+copystring (const char *src, int len)
 {
     char *cp;
 
@@ -92,7 +92,7 @@ copyhostname (void)
  * parse_displayname - display a display string up into its component parts
  */
 Bool
-parse_displayname (char *displayname,
+parse_displayname (const char *displayname,
 		   int *familyp,	/* return */
 		   char **hostp,	/* return */
 		   int *dpynump,	/* return */
