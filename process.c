@@ -38,7 +38,11 @@ from The Open Group.
 #include <ctype.h>
 #include <errno.h>
 #include <sys/stat.h>
+#ifndef WIN32
 #include <sys/socket.h>
+#else
+#include <X11/Xwinsock.h>
+#endif
 
 #include <signal.h>
 #include <X11/X.h>			/* for Family constants */
