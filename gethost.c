@@ -29,12 +29,6 @@ in this Software without prior written authorization from The Open Group.
 #include "config.h"
 #endif
 
-/* sorry, streams support does not really work yet */
-#if defined(STREAMSCONN) && defined(SVR4)
-#undef STREAMSCONN
-#define TCPCONN
-#endif
-
 #ifdef WIN32
 #include <X11/Xwinsock.h>
 #define EPROTOTYPE WSAEPROTOTYPE
@@ -48,7 +42,6 @@ in this Software without prior written authorization from The Open Group.
 #define __TYPES__
 #endif
 #ifndef WIN32
-#ifndef STREAMSCONN
 #ifndef Lynx
 #include <sys/socket.h>
 #else
@@ -60,7 +53,6 @@ in this Software without prior written authorization from The Open Group.
 #ifdef HAVE_NET_ERRNO_H
 #include <net/errno.h>
 #endif /* HAVE_NET_ERRNO_H */
-#endif /* !STREAMSCONN */
 #endif /* !WIN32 */
 #include <errno.h>
 #include "xauth.h"
