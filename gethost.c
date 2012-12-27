@@ -57,10 +57,6 @@ in this Software without prior written authorization from The Open Group.
 #include <errno.h>
 #include "xauth.h"
 
-#ifdef DNETCONN
-#include <netdnet/dn.h>
-#include <netdnet/dnetdb.h>
-#endif
 
 #ifndef WIN32
 #include <arpa/inet.h>
@@ -71,10 +67,6 @@ get_hostname (Xauth *auth)
 {
     static struct hostent *hp;
     int af;
-#ifdef DNETCONN
-    struct nodeent *np;
-    static char nodeaddr[4 + 2 * DN_MAXADDL];
-#endif /* DNETCONN */
 
     hp = NULL;
     if (auth->address_length == 0)
@@ -114,19 +106,6 @@ get_hostname (Xauth *auth)
 	else {
 	  return (inet_ntoa(*((struct in_addr *)(auth->address))));
 	}
-    }
-#endif
-#ifdef DNETCONN
-    if (auth->family == FamilyDECnet) {
-	struct dn_naddr *addr_ptr = (struct dn_naddr *) auth->address;
-
-	if ((no_name_lookups == False) &&
-	    (np = getnodebyaddr(addr_ptr->a_addr, addr_ptr->a_len, AF_DECnet))) {
-	    sprintf(nodeaddr, "%s:", np->n_name);
-	} else {
-	    sprintf(nodeaddr, "%s:", dnet_htoa(auth->address));
-	}
-	return(nodeaddr);
     }
 #endif
 
@@ -169,25 +148,6 @@ get_inet_address(char *name, unsigned int *resultp)
 }
 #endif
 
-#ifdef DNETCONN
-static Bool get_dnet_address (name, resultp)
-    char *name;
-    struct dn_naddr *resultp;
-{
-    struct dn_naddr *dnaddrp, dnaddr;
-    struct nodeent *np;
-
-    if (dnaddrp = dnet_addr (name)) {	/* stolen from xhost */
-	dnaddr = *dnaddrp;
-    } else {
-	if ((np = getnodebyname (name)) == NULL) return False;
-	dnaddr.a_len = np->n_length;
-	memmove( dnaddr.a_addr, np->n_addr, np->n_length);
-    }
-    *resultp = dnaddr;
-    return True;
-}
-#endif
 
 struct addrlist *get_address_info (
     int family,
@@ -207,9 +167,6 @@ struct addrlist *get_address_info (
 #else
     unsigned int hostinetaddr;
 #endif
-#endif
-#ifdef DNETCONN
-    struct dn_naddr dnaddr;
 #endif
     char buf[255];
 
@@ -322,14 +279,7 @@ struct addrlist *get_address_info (
 	return NULL;
 #endif
       case FamilyDECnet:		/* host::0 */
-#ifdef DNETCONN
-	if (!get_dnet_address (host, &dnaddr)) return NULL;
-	src = (char *) &dnaddr;
-	len = (sizeof dnaddr);
-	break;
-#else
 	/* fall through since we don't have code for it */
-#endif
       default:
 	src = NULL;
 	len = 0;
