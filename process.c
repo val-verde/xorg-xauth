@@ -637,18 +637,15 @@ static volatile Bool dieing = False;
 #define WRITES(fd, S) (void)write((fd), (S), strlen((S)))
 
 /* ARGSUSED */
-static RETSIGTYPE
+static void
 die(int sig)
 {
     dieing = True;
     _exit (auth_finalize ());
     /* NOTREACHED */
-#ifdef SIGNALRETURNSINT
-    return -1;				/* for picky compilers */
-#endif
 }
 
-static RETSIGTYPE
+static void
 catchsig(int sig)
 {
 #ifdef SYSV
@@ -665,9 +662,6 @@ catchsig(int sig)
 #endif
     die (sig);
     /* NOTREACHED */
-#ifdef SIGNALRETURNSINT
-    return -1;				/* for picky compilers */
-#endif
 }
 
 static void
