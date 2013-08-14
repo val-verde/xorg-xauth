@@ -1066,11 +1066,15 @@ eq_auth(Xauth *a, Xauth *b)
 static int
 match_auth_dpy(register Xauth *a, register Xauth *b)
 {
-    return ((a->family == b->family &&
-	     a->address_length == b->address_length &&
-	     a->number_length == b->number_length &&
-	     memcmp(a->address, b->address, a->address_length) == 0 &&
-	     memcmp(a->number, b->number, a->number_length) == 0) ? 1 : 0);
+    if (a->family != FamilyWild && b->family != FamilyWild &&
+        (a->family != b->family || a->address_length != b->address_length ||
+         memcmp(a->address, b->address, a->address_length) != 0))
+        return 0;
+    if (a->number_length != 0 && b->number_length != 0 &&
+          (a->number_length != b->number_length ||
+           memcmp(a->number, b->number, a->number_length) != 0))
+        return 0;
+    return 1;
 }
 
 /* return non-zero iff display and authorization type are the same */
