@@ -248,17 +248,17 @@ skip_nonspace(register char *s)
     return s;
 }
 
-static char **
+static const char **
 split_into_words(char *src, int *argcp)  /* argvify string */
 {
     char *jword;
     char savec;
-    char **argv;
+    const char **argv;
     int cur, total;
 
     *argcp = 0;
 #define WORDSTOALLOC 4			/* most lines are short */
-    argv = (char **) malloc (WORDSTOALLOC * sizeof (char *));
+    argv = malloc (WORDSTOALLOC * sizeof (char *));
     if (!argv) return NULL;
     cur = 0;
     total = WORDSTOALLOC;
@@ -276,7 +276,7 @@ split_into_words(char *src, int *argcp)  /* argvify string */
 	*src = '\0';
 	if (cur == total) {
 	    total += WORDSTOALLOC;
-	    argv = (char **) realloc (argv, total * sizeof (char *));
+	    argv = realloc (argv, total * sizeof (char *));
 	    if (!argv) return NULL;
 	}
 	argv[cur++] = jword;
@@ -1802,6 +1802,7 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
     int authdatalen = 0;
     const char *hexdata;
     char *authdata = NULL;
+    char *hex;
 
     if (argc < 2 || !argv[1]) {
 	prefix (inputfilename, lineno);
@@ -1892,7 +1893,7 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 
     auth_in = XSecurityAllocXauth();
     if (strcmp (protoname, DEFAULT_PROTOCOL_ABBREV) == 0) {
-	 auth_in->name = DEFAULT_PROTOCOL;
+	 auth_in->name = copystring(DEFAULT_PROTOCOL, strlen(DEFAULT_PROTOCOL));
     }
     else
 	auth_in->name = copystring (protoname, strlen(protoname));
@@ -1917,18 +1918,18 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 	printf("authorization id is %ld\n", id_return);
 
     /* create a fake input line to give to do_add */
-
+    hex = bintohex(auth_return->data_length, auth_return->data);
     args[0] = "add";
     args[1] = displayname;
     args[2] = auth_in->name;
-    args[3] = bintohex(auth_return->data_length, auth_return->data);
+    args[3] = hex;
 
     status = do_add(inputfilename, lineno, 4, args);
 
     if (authdata) free(authdata);
     XSecurityFreeXauth(auth_in);
     XSecurityFreeXauth(auth_return);
-    free((char *) args[3]); /* hex data */
+    free(hex);
     XCloseDisplay(dpy);
     return status;
 }

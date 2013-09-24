@@ -65,10 +65,13 @@ in this Software without prior written authorization from The Open Group.
 const char *
 get_hostname (Xauth *auth)
 {
+#ifdef TCPCONN
     static struct hostent *hp;
     int af;
 
     hp = NULL;
+#endif
+
     if (auth->address_length == 0)
 	return "Illegal Address";
 #ifdef TCPCONN

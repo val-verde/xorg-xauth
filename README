@@ -1,5 +1,7 @@
 The xauth program is used to edit and display the authorization
 information used in connecting to the X server.
+The underlying "Authorization Protocol for X" is described in the
+README file of the libXau module of X11.
 
 All questions regarding this software should be directed at the
 Xorg mailing list:
