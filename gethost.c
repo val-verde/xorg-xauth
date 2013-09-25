@@ -231,7 +231,7 @@ struct addrlist *get_address_info (
 	    if (ai->ai_family == AF_INET) {
 		struct sockaddr_in *sin = (struct sockaddr_in *)ai->ai_addr;
 		src = &(sin->sin_addr);
-                if (*(in_addr_t *) src == htonl(INADDR_LOOPBACK)) {
+                if (*(const in_addr_t *) src == htonl(INADDR_LOOPBACK)) {
                     family = FamilyLocal;
                     if (get_local_hostname (buf, sizeof buf)) {
                         src = buf;
@@ -245,8 +245,8 @@ struct addrlist *get_address_info (
 	    } else if (ai->ai_family == AF_INET6) {
 		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)ai->ai_addr;
 		src = &(sin6->sin6_addr);
-                if (IN6_IS_ADDR_V4MAPPED((struct sockaddr_in6 *)src)
-                    || IN6_IS_ADDR_LOOPBACK((struct sockaddr_in6 *)src)) {
+                if (IN6_IS_ADDR_V4MAPPED((const struct sockaddr_in6 *)src)
+                    || IN6_IS_ADDR_LOOPBACK((const struct sockaddr_in6 *)src)) {
                     family = FamilyLocal;
                     if (get_local_hostname (buf, sizeof buf)) {
                         src = buf;
@@ -295,7 +295,7 @@ struct addrlist *get_address_info (
 #else
 	if (!get_inet_address (host, &hostinetaddr)) return NULL;
 	src = (char *) &hostinetaddr;
-        if (*(in_addr_t *) src == htonl(INADDR_LOOPBACK)) {
+        if (*(const in_addr_t *) src == htonl(INADDR_LOOPBACK)) {
             family = FamilyLocal;
             if (get_local_hostname (buf, sizeof buf)) {
                 src = buf;
