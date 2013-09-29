@@ -227,36 +227,16 @@ struct addrlist *get_address_info (
 	for (ai = firstai; ai != NULL; ai = ai->ai_next) {
 	    struct addrlist *duplicate;
 
-            len = 0;
 	    if (ai->ai_family == AF_INET) {
 		struct sockaddr_in *sin = (struct sockaddr_in *)ai->ai_addr;
 		src = &(sin->sin_addr);
-                if (*(const in_addr_t *) src == htonl(INADDR_LOOPBACK)) {
-                    family = FamilyLocal;
-                    if (get_local_hostname (buf, sizeof buf)) {
-                        src = buf;
-                        len = strlen (buf);
-                    } else
-                        src = NULL;
-                } else {
-                    len = sizeof(sin->sin_addr);
-                    family = FamilyInternet;
-                }
+		len = sizeof(sin->sin_addr);
+		family = FamilyInternet;
 	    } else if (ai->ai_family == AF_INET6) {
 		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)ai->ai_addr;
 		src = &(sin6->sin6_addr);
-                if (IN6_IS_ADDR_V4MAPPED((const struct sockaddr_in6 *)src)
-                    || IN6_IS_ADDR_LOOPBACK((const struct sockaddr_in6 *)src)) {
-                    family = FamilyLocal;
-                    if (get_local_hostname (buf, sizeof buf)) {
-                        src = buf;
-                        len = strlen (buf);
-                    } else
-                        src = NULL;
-                } else {
-                    len = sizeof(sin6->sin6_addr);
-                    family = FamilyInternet6;
-                }
+		len = sizeof(sin6->sin6_addr);
+		family = FamilyInternet6;
 	    }
 
 	    for(duplicate = retval; duplicate != NULL; duplicate = duplicate->next) {
@@ -295,17 +275,7 @@ struct addrlist *get_address_info (
 #else
 	if (!get_inet_address (host, &hostinetaddr)) return NULL;
 	src = (char *) &hostinetaddr;
-        if (*(const in_addr_t *) src == htonl(INADDR_LOOPBACK)) {
-            family = FamilyLocal;
-            if (get_local_hostname (buf, sizeof buf)) {
-                src = buf;
-                len = strlen (buf);
-            } else {
-                len = 0;
-                src = NULL;
-            }
-        } else
-            len = 4; /* sizeof inaddr.sin_addr, would fail on Cray */
+	len = 4; /* sizeof inaddr.sin_addr, would fail on Cray */
 	break;
 #endif /* IPv6 */
 #else
