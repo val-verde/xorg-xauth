@@ -637,6 +637,7 @@ static volatile Bool dieing = False;
 #define WRITES(fd, S) (void)write((fd), (S), strlen((S)))
 
 /* ARGSUSED */
+_X_NORETURN
 static void
 die(int sig)
 {
@@ -645,6 +646,7 @@ die(int sig)
     /* NOTREACHED */
 }
 
+_X_NORETURN
 static void
 catchsig(int sig)
 {

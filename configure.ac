@@ -41,7 +41,7 @@ AC_CHECK_HEADERS([net/errno.h])
 AC_CHECK_FUNCS([strlcpy])
 
 # Checks for pkg-config packages
-PKG_CHECK_MODULES(XAUTH, x11 xau xext xmuu)
+PKG_CHECK_MODULES(XAUTH, x11 xau xext xmuu xproto >= 7.0.17)
 
 # Transport selection macro from xtrans.m4
 # Needed to set *CONN defines for gethost.c & parsedpy.c

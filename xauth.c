@@ -56,6 +56,7 @@ static const char *defsource = "(stdin)";
 /*
  * utility routines
  */
+_X_NORETURN
 static void
 usage(void)
 {
