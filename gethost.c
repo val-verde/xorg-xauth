@@ -245,17 +245,23 @@ struct addrlist *get_address_info (
 	    } else if (ai->ai_family == AF_INET6) {
 		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)ai->ai_addr;
 		src = &(sin6->sin6_addr);
-                if (IN6_IS_ADDR_V4MAPPED((const struct in6_addr *)src)
-                    || IN6_IS_ADDR_LOOPBACK((const struct in6_addr *)src)) {
-                    family = FamilyLocal;
-                    if (get_local_hostname (buf, sizeof buf)) {
-                        src = buf;
-                        len = strlen (buf);
-                    } else
-                        src = NULL;
+                if (!IN6_IS_ADDR_V4MAPPED((const struct in6_addr *)src)) {
+                    if (IN6_IS_ADDR_LOOPBACK((const struct in6_addr *)src)) {
+                        family = FamilyLocal;
+                        if (get_local_hostname (buf, sizeof buf)) {
+                            src = buf;
+                            len = strlen (buf);
+                        } else
+                            src = NULL;
+                    } else {
+                        len = sizeof(sin6->sin6_addr);
+                        family = FamilyInternet6;
+                    }
                 } else {
-                    len = sizeof(sin6->sin6_addr);
-                    family = FamilyInternet6;
+                    src = &(sin6->sin6_addr.s6_addr[12]);
+                    len = sizeof(((struct sockaddr_in *)
+                                  ai->ai_addr)->sin_addr);
+                    family = FamilyInternet;
                 }
 	    }
 
