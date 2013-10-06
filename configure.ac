@@ -51,5 +51,6 @@ XORG_WITH_LINT
 
 AC_CONFIG_FILES([
 	Makefile
+	tests/Makefile
 	man/Makefile])
 AC_OUTPUT
