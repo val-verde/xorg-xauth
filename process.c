@@ -1323,23 +1323,23 @@ remove_entry(const char *inputfilename, int lineno, Xauth *auth, char *data)
  * help
  */
 int
-print_help(FILE *fp, const char *cmd, const char *prefix)
+print_help(FILE *fp, const char *cmd, const char *line_prefix)
 {
     CommandTable *ct;
     int n = 0;
 
-    if (!prefix) prefix = "";
+    if (!line_prefix) line_prefix = "";
 
     if (!cmd) {				/* if no cmd, print all help */
 	for (ct = command_table; ct->name; ct++) {
-	    fprintf (fp, "%s%s\n", prefix, ct->helptext);
+	    fprintf (fp, "%s%s\n", line_prefix, ct->helptext);
 	    n++;
 	}
     } else {
 	int len = strlen (cmd);
 	for (ct = command_table; ct->name; ct++) {
 	    if (strncmp (cmd, ct->name, len) == 0) {
-		fprintf (fp, "%s%s\n", prefix, ct->helptext);
+		fprintf (fp, "%s%s\n", line_prefix, ct->helptext);
 		n++;
 	    }
 	}
