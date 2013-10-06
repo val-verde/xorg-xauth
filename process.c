@@ -1066,14 +1066,30 @@ eq_auth(Xauth *a, Xauth *b)
 static int
 match_auth_dpy(register Xauth *a, register Xauth *b)
 {
-    if (a->family != FamilyWild && b->family != FamilyWild &&
-        (a->family != b->family || a->address_length != b->address_length ||
-         memcmp(a->address, b->address, a->address_length) != 0))
-        return 0;
-    if (a->number_length != 0 && b->number_length != 0 &&
-          (a->number_length != b->number_length ||
-           memcmp(a->number, b->number, a->number_length) != 0))
-        return 0;
+    if (a->family != FamilyWild && b->family != FamilyWild) {
+        /* Both "a" and "b" are not FamilyWild, they are "normal" families. */
+	
+	/* Make sure, that both families match: */
+	if (a->family != b->family)
+            return 0;
+	
+	/* By looking at 'man Xsecurity' and the code in
+	 * GetAuthByAddr() and XauGetBestAuthByAddr() in libXau, we
+	 * decided, that the address is only relevant for "normal"
+	 * families and therefore should be ignored for
+	 * "FamilyWild". */
+	if (a->address_length != b->address_length ||
+            memcmp(a->address, b->address, a->address_length) != 0)
+            return 0;
+    }
+    
+    if (a->number_length != 0 && b->number_length != 0) {
+	/* Both "a" and "b" have a number, make sure they match: */
+	if (a->number_length != b->number_length ||
+	    memcmp(a->number, b->number, a->number_length) != 0)
+            return 0;
+    }
+    
     return 1;
 }
 
