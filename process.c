@@ -116,6 +116,7 @@ static int do_exit ( const char *inputfilename, int lineno, int argc, const char
 static int do_quit ( const char *inputfilename, int lineno, int argc, const char **argv );
 static int do_source ( const char *inputfilename, int lineno, int argc, const char **argv );
 static int do_generate ( const char *inputfilename, int lineno, int argc, const char **argv );
+static int do_version ( const char *inputfilename, int lineno, int argc, const char **argv );
 
 static CommandTable command_table[] = {	/* table of known commands */
     { "add",      2, 3, do_add,
@@ -144,6 +145,8 @@ static CommandTable command_table[] = {	/* table of known commands */
 	"remove dpyname...              remove entries" },
     { "source",   1, 6, do_source,
 	"source filename                read commands from file" },
+    { "version",  1, 7, do_version,
+	"version                        show version number of xauth" },
     { "?",        1, 1, do_questionmark,
 	"?                              list available commands" },
     { "generate", 1, 8, do_generate,
@@ -1408,6 +1411,17 @@ do_questionmark(const char *inputfilename, int lineno, int argc, const char **ar
     }
 
     /* allow bad lines since this is help */
+    return 0;
+}
+
+/*
+ * version
+ */
+/* ARGSUSED */
+static int
+do_version(const char *inputfilename, int lineno, int argc, const char **argv)
+{
+    puts (PACKAGE_VERSION);
     return 0;
 }
 
