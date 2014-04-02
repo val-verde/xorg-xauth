@@ -46,8 +46,8 @@ public. A detailed description of this process can be found at
 http://www.x.org/wiki/Development/Documentation/ReleaseHOWTO with a
 few clarification below.
 
-For releasing under Fedora make sure, that
-/usr/share/util-macros/INSTALL exists. If not, then please create that
+For releasing under Fedora make sure, that INSTALL in
+/usr/share/util-macros/ exists. If not, then please create that
 file.
 
 To release a new version of xauth, please follow this steps:
