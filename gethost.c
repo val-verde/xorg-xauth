@@ -200,7 +200,7 @@ struct addrlist *get_address_info (
 	    strlcpy(path, fulldpyname, sizeof(path));
 #else
 	    strncpy(path, fulldpyname, sizeof(path));
-	    buf[sizeof(path) - 1] = '\0';
+	    path[sizeof(path) - 1] = '\0';
 #endif
 	    if (0 == stat(path, &sbuf)) {
 		is_path_to_socket = 1;

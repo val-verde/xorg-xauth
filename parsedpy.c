@@ -173,7 +173,7 @@ parse_displayname (const char *displayname,
         strlcpy(path, displayname, sizeof(path));
 #else
         strncpy(path, displayname, sizeof(path));
-        buf[sizeof(path) - 1] = '\0';
+        path[sizeof(path) - 1] = '\0';
 #endif
         if (0 == stat(path, &sbuf)) {
             family = FamilyLocal;
