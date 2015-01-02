@@ -58,7 +58,7 @@ in this Software without prior written authorization from The Open Group.
 #include "xauth.h"
 
 #include <sys/stat.h>
-#include <sys/syslimits.h>
+#include <limits.h>
 
 #ifndef WIN32
 #include <arpa/inet.h>

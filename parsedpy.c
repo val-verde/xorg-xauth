@@ -43,7 +43,7 @@ in this Software without prior written authorization from The Open Group.
 #include <X11/Xmu/SysUtil.h>
 
 #include <sys/stat.h>
-#include <sys/syslimits.h>
+#include <limits.h>
 
 #if defined(UNIXCONN) || defined(LOCALCONN)
 #define UNIX_CONNECTION "unix"
