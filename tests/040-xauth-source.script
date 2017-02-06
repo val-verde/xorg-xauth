@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # setup the test ennvironment inside this shell
 . setup-sourced
