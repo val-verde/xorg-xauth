@@ -1008,7 +1008,7 @@ dump_entry(const char *inputfilename, int lineno, Xauth *auth, char *data)
 		fprintf (fp, "%s", dpyname);
 		break;
 	    }
-	    /* else fall through to default */
+	    /* else fall through */
 	  default:
 	    fprintf (fp, "#%04x#", auth->family);
 	    fprintfhex (fp, auth->address_length, auth->address);
