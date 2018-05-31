@@ -1057,16 +1057,22 @@ extract_entry(const char *inputfilename, int lineno, Xauth *auth, char *data)
 
 
 static int
-eq_auth(Xauth *a, Xauth *b)
+eq_auth_dpy_and_name(Xauth *a, Xauth *b)
 {
     return((a->family == b->family &&
 	    a->address_length == b->address_length &&
 	    a->number_length == b->number_length &&
 	    a->name_length == b->name_length &&
-	    a->data_length == b->data_length &&
 	    memcmp(a->address, b->address, a->address_length) == 0 &&
 	    memcmp(a->number, b->number, a->number_length) == 0 &&
-	    memcmp(a->name, b->name, a->name_length) == 0 &&
+	    memcmp(a->name, b->name, a->name_length) == 0) ? 1 : 0);
+}
+
+static int
+eq_auth(Xauth *a, Xauth *b)
+{
+    return((eq_auth_dpy_and_name(a, b) &&
+	    a->data_length == b->data_length &&
 	    memcmp(a->data, b->data, a->data_length) == 0) ? 1 : 0);
 }
 
@@ -1099,17 +1105,6 @@ match_auth_dpy(register Xauth *a, register Xauth *b)
     
     return 1;
 }
-
-/* return non-zero iff display and authorization type are the same */
-
-static int
-match_auth(register Xauth *a, register Xauth *b)
-{
-    return ((match_auth_dpy(a, b)
-	     && a->name_length == b->name_length
-	     && memcmp(a->name, b->name, a->name_length) == 0) ? 1 : 0);
-}
-
 
 static int
 merge_entries(AuthList **firstp, AuthList *second, int *nnewp, int *nreplp)
@@ -1144,7 +1139,7 @@ merge_entries(AuthList **firstp, AuthList *second, int *nnewp, int *nreplp)
 
 	a = first;
 	for (;;) {
-	    if (match_auth (a->auth, b->auth)) {  /* found a duplicate */
+	    if (eq_auth_dpy_and_name (a->auth, b->auth)) {  /* found a duplicate */
 		AuthList tmp;		/* swap it in for old one */
 		tmp = *a;
 		*a = *b;
