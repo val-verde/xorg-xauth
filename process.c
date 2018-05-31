@@ -1170,6 +1170,45 @@ merge_entries(AuthList **firstp, AuthList *second, int *nnewp, int *nreplp)
 
 }
 
+static void
+sort_entries(AuthList **firstp)
+{
+    /* Insert sort, in each pass it removes auth records of certain */
+    /* cathegory from the given list and inserts them into the sorted list. */
+
+    AuthList *sorted = NULL, *sorted_tail = NULL;
+    AuthList *prev, *iter, *next;
+
+    #define SORT_OUT(EXPRESSION) { \
+	prev = NULL; \
+	for (iter = *firstp; iter; iter = next) { \
+	    next = iter->next; \
+	    if (EXPRESSION) { \
+		if (prev) \
+		    prev->next = next; \
+		else \
+		    *firstp = next; \
+		if (sorted_tail == NULL) { \
+		    sorted = sorted_tail = iter; \
+		} else { \
+		    sorted_tail->next = iter; \
+		    sorted_tail = iter; \
+		} \
+		iter->next = NULL; \
+	    } else { \
+		prev = iter; \
+	    } \
+	} \
+    }
+
+    SORT_OUT(iter->auth->family != FamilyWild && iter->auth->number_length != 0);
+    SORT_OUT(iter->auth->family != FamilyWild && iter->auth->number_length == 0);
+    SORT_OUT(iter->auth->family == FamilyWild && iter->auth->number_length != 0);
+    SORT_OUT(iter->auth->family == FamilyWild && iter->auth->number_length == 0);
+
+    *firstp = sorted;
+}
+
 static Xauth *
 copyAuth(Xauth *auth)
 {
@@ -1508,6 +1547,7 @@ do_merge(const char *inputfilename, int lineno, int argc, const char **argv)
 	  printf ("%d entries read in:  %d new, %d replacement%s\n",
 	  	  nentries, nnew, nrepl, nrepl != 1 ? "s" : "");
 	if (nentries > 0) xauth_modified = True;
+	sort_entries(&xauth_head);
     }
 
     return 0;
@@ -1656,6 +1696,7 @@ do_add(const char *inputfilename, int lineno, int argc, const char **argv)
 	fprintf (stderr, "unable to merge in added record\n");
 	return 1;
     }
+    sort_entries(&xauth_head);
 
     xauth_modified = True;
     return 0;
