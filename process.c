@@ -890,19 +890,11 @@ auth_finalize(void)
 			 "%s:  unable to write authority file %s\n",
 			 ProgramName, temp_name);
 	    } else {
-		(void) unlink (xauth_filename);
-#if defined(WIN32) || defined(__UNIXOS2__)
-		if (rename(temp_name, xauth_filename) == -1)
-#else
-		/* Attempt to rename() if link() fails, since this may be on a FS that does not support hard links */
-		if (link (temp_name, xauth_filename) == -1 && rename(temp_name, xauth_filename) == -1)
-#endif
-		{
+		if (rename(temp_name, xauth_filename) == -1) {
 		    fprintf (stderr,
-		     "%s:  unable to link authority file %s, use %s\n",
+		     "%s:  unable to rename authority file %s, use %s\n",
 			     ProgramName, xauth_filename, temp_name);
-		} else {
-		    (void) unlink (temp_name);
+                    unlink(temp_name);
 		}
 	    }
 	}
