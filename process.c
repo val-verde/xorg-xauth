@@ -697,6 +697,10 @@ auth_initialize(const char *authfilename)
     FILE *authfp;
     Bool exists;
 
+    if (strlen(authfilename) > 1022) {
+	fprintf (stderr, "%s: authority file name \"%s\" too long\n",
+		 ProgramName, authfilename);
+    }
     xauth_filename = authfilename;    /* used in cleanup, prevent race with
                                          signals */
     register_signals ();
@@ -854,7 +858,7 @@ write_auth_file(char *tmp_nam)
 int
 auth_finalize(void)
 {
-    char temp_name[1024];	/* large filename size */
+    char temp_name[1025];	/* large filename size */
 
     if (xauth_modified) {
 	if (dieing) {
