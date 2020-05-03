@@ -1614,7 +1614,7 @@ do_add(const char *inputfilename, int lineno, int argc, const char **argv)
     hexkey = argv[3];
 
     len = strlen(hexkey);
-    if (hexkey[0] == '"' && hexkey[len-1] == '"') {
+    if (len > 1 && hexkey[0] == '"' && hexkey[len-1] == '"') {
 	key = malloc(len-1);
 	strncpy(key, hexkey+1, len-2);
 	len -= 2;
