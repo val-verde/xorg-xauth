@@ -1882,10 +1882,10 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
     const char *displayname;
     int major_version, minor_version;
     XSecurityAuthorization id_return;
-    Xauth *auth_in, *auth_return;
+    Xauth *auth_in = NULL, *auth_return = NULL;
     XSecurityAuthorizationAttributes attributes;
     unsigned long attrmask = 0;
-    Display *dpy;
+    Display *dpy = NULL;
     int status;
     const char *args[4];
     const char *protoname = ".";
@@ -1893,7 +1893,7 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
     int authdatalen = 0;
     const char *hexdata;
     char *authdata = NULL;
-    char *hex;
+    char *hex = NULL;
 
     if (argc < 2 || !argv[1]) {
 	prefix (inputfilename, lineno);
@@ -1912,7 +1912,8 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 	    if (++i == argc) {
 		prefix (inputfilename, lineno);
 		badcommandline (argv[i-1]);
-		return 1;
+		status = 1;
+		goto exit_generate;
 	    }
 	    attributes.timeout = atoi(argv[i]);
 	    attrmask |= XSecurityTimeout;
@@ -1929,7 +1930,8 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 	    if (++i == argc) {
 		prefix (inputfilename, lineno);
 		badcommandline (argv[i-1]);
-		return 1;
+		status = 1;
+		goto exit_generate;
 	    }
 	    attributes.group = atoi(argv[i]);
 	    attrmask |= XSecurityGroup;
@@ -1938,7 +1940,8 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 	    if (++i == argc) {
 		prefix (inputfilename, lineno);
 		badcommandline (argv[i-1]);
-		return 1;
+		status = 1;
+		goto exit_generate;
 	    }
 	    hexdata = argv[i];
 	    authdatalen = strlen(hexdata);
@@ -1952,13 +1955,15 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 		    prefix (inputfilename, lineno);
 		    fprintf (stderr,
 			     "data contains odd number of or non-hex characters\n");
-		    return 1;
+		    status = 1;
+		    goto exit_generate;
 		}
 	    }
 	} else {
 	    prefix (inputfilename, lineno);
 	    badcommandline (argv[i]);
-	    return 1;
+	    status = 1;
+	    goto exit_generate;
 	}
     }
 
@@ -1968,7 +1973,8 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
     if (!dpy) {
 	prefix (inputfilename, lineno);
 	fprintf (stderr, "unable to open display \"%s\".\n", displayname);
-	return 1;
+	status = 1;
+	goto exit_generate;
     }
 
     status = XSecurityQueryExtension(dpy, &major_version, &minor_version);
@@ -1977,7 +1983,8 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 	prefix (inputfilename, lineno);
 	fprintf (stderr, "couldn't query Security extension on display \"%s\"\n",
 		 displayname);
-        return 1;
+	status = 1;
+	goto exit_generate;
     }
 
     /* fill in input Xauth struct */
@@ -2002,7 +2009,8 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
     {
 	prefix (inputfilename, lineno);
 	fprintf (stderr, "couldn't generate authorization\n");
-	return 1;
+	status = 1;
+	goto exit_generate;
     }
 
     if (verbose)
@@ -2017,10 +2025,12 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 
     status = do_add(inputfilename, lineno, 4, args);
 
-    if (authdata) free(authdata);
+  exit_generate:
+    free(authdata);
     XSecurityFreeXauth(auth_in);
     XSecurityFreeXauth(auth_return);
     free(hex);
-    XCloseDisplay(dpy);
+    if (dpy != NULL)
+	XCloseDisplay(dpy);
     return status;
 }
