@@ -37,6 +37,7 @@ from The Open Group.
 #include "xauth.h"
 #include <ctype.h>
 #include <errno.h>
+#include <stdint.h>
 #include <sys/stat.h>
 #ifndef WIN32
 #include <sys/socket.h>
@@ -251,6 +252,18 @@ skip_nonspace(register char *s)
     return s;
 }
 
+#ifndef HAVE_REALLOCARRAY
+static inline void *
+reallocarray(void *optr, size_t nmemb, size_t size)
+{
+    if ((nmemb > 0) && (SIZE_MAX / nmemb < size)) {
+        errno = ENOMEM;
+        return NULL;
+    }
+    return realloc(optr, size * nmemb);
+}
+#endif
+
 static const char **
 split_into_words(char *src, int *argcp)  /* argvify string */
 {
@@ -280,7 +293,7 @@ split_into_words(char *src, int *argcp)  /* argvify string */
 	if (cur == total) {
 	    const char **new_argv;
 	    total += WORDSTOALLOC;
-	    new_argv = realloc (argv, total * sizeof (char *));
+	    new_argv = reallocarray (argv, total, sizeof (char *));
 	    if (new_argv != NULL) {
 		argv = new_argv;
 	    } else {

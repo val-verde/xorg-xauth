@@ -42,7 +42,7 @@ XORG_DEFAULT_OPTIONS
 
 AC_CHECK_HEADERS([net/errno.h])
 
-AC_CHECK_FUNCS([strlcpy])
+AC_CHECK_FUNCS([reallocarray strlcpy])
 
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XAUTH, x11 xau xext xmuu xproto >= 7.0.17)
