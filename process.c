@@ -278,9 +278,15 @@ split_into_words(char *src, int *argcp)  /* argvify string */
 	savec = *src;
 	*src = '\0';
 	if (cur == total) {
+	    const char **new_argv;
 	    total += WORDSTOALLOC;
-	    argv = realloc (argv, total * sizeof (char *));
-	    if (!argv) return NULL;
+	    new_argv = realloc (argv, total * sizeof (char *));
+	    if (new_argv != NULL) {
+		argv = new_argv;
+	    } else {
+		free(argv);
+		return NULL;
+	    }
 	}
 	argv[cur++] = jword;
 	if (savec) src++;		/* if not last on line advance */
