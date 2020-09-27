@@ -1644,6 +1644,7 @@ do_add(const char *inputfilename, int lineno, int argc, const char **argv)
 	    return 1;
 	}
 	strncpy(key, hexkey+1, len-2);
+	key[len-1] = '\0';
 	len -= 2;
     } else if (!strcmp(protoname, SECURERPC) ||
 	       !strcmp(protoname, K5AUTH)) {
@@ -1961,6 +1962,7 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 		    goto exit_generate;
 		}
 		strncpy(authdata, hexdata+1, authdatalen-2);
+		authdata[authdatalen-1] = '\0';
 		authdatalen -= 2;
 	    } else {
 		authdatalen = cvthexkey (hexdata, &authdata);

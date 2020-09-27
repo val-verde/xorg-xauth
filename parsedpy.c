@@ -172,7 +172,7 @@ parse_displayname (const char *displayname,
 #ifdef HAVE_STRLCPY
         strlcpy(path, displayname, sizeof(path));
 #else
-        strncpy(path, displayname, sizeof(path));
+        strncpy(path, displayname, sizeof(path) - 1);
         path[sizeof(path) - 1] = '\0';
 #endif
         if (0 == stat(path, &sbuf)) {
