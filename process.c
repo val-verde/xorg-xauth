@@ -1639,11 +1639,19 @@ do_add(const char *inputfilename, int lineno, int argc, const char **argv)
     len = strlen(hexkey);
     if (len > 1 && hexkey[0] == '"' && hexkey[len-1] == '"') {
 	key = malloc(len-1);
+	if (!key) {
+	    fprintf(stderr, "unable to allocate memory\n");
+	    return 1;
+	}
 	strncpy(key, hexkey+1, len-2);
 	len -= 2;
     } else if (!strcmp(protoname, SECURERPC) ||
 	       !strcmp(protoname, K5AUTH)) {
 	key = malloc(len+1);
+	if (!key) {
+	    fprintf(stderr, "unable to allocate memory\n");
+	    return 1;
+	}
 	strcpy(key, hexkey);
     } else {
 	len = cvthexkey (hexkey, &key);
@@ -1947,6 +1955,11 @@ do_generate(const char *inputfilename, int lineno, int argc, const char **argv)
 	    authdatalen = strlen(hexdata);
 	    if (hexdata[0] == '"' && hexdata[authdatalen-1] == '"') {
 		authdata = malloc(authdatalen-1);
+		if (!authdata) {
+		    fprintf(stderr, "unable to allocate memory\n");
+		    status = 1;
+		    goto exit_generate;
+		}
 		strncpy(authdata, hexdata+1, authdatalen-2);
 		authdatalen -= 2;
 	    } else {
