@@ -652,7 +652,7 @@ static Bool xauth_modified = False;	/* if added, removed, or merged */
 static Bool xauth_allowed = True;	/* if allowed to write auth file */
 static Bool xauth_locked = False;     /* if has been locked */
 static const char *xauth_filename = NULL;
-static volatile Bool dieing = False;
+static volatile Bool dying = False;
 
 
 /* poor man's puts(), for under signal handlers, 
@@ -664,7 +664,7 @@ _X_NORETURN
 static void
 die(int sig)
 {
-    dieing = True;
+    dying = True;
     _exit (auth_finalize ());
     /* NOTREACHED */
 }
@@ -880,7 +880,7 @@ auth_finalize(void)
     char temp_name[1025];	/* large filename size */
 
     if (xauth_modified) {
-	if (dieing) {
+	if (dying) {
 	    if (verbose) {
 		/*
 		 * called from a signal handler -- printf is *not* reentrant; also
