@@ -8,8 +8,6 @@ EXTRA_DIST = setup-sourced \
              090-xauth-bad-usage.script 090-xauth-bad-usage.stderr 090-xauth-bad-usage.stdout
 
 TESTS = test_xauth
-check_PROGRAMS = test_xauth
-test_xauth_SOURCES = test_xauth.c
 
 
 

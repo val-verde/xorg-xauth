@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # setup the test ennvironment inside this shell
-. setup-sourced
+. ./setup-sourced
 
 # Execute the test
 
