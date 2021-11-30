@@ -6,22 +6,23 @@
 #   If no difference is found, the test is assumed as PASS (otherwise FAIL)
 #
 total_ret=0
-for script in `ls -1 ./*.script | sort` ; do
+testsrc="${srcdir:-.}"
+for script in `ls -1 ${testsrc}/*.script | sort` ; do
 	base=`basename $script .script`
 	echo "Testing $base"
         $script > out.stdout 2> out.stderr
 
 	# check stdout for correctness
-	if [ -f $base.stdout ]; then
-		diff out.stdout $base.stdout
+	if [ -f ${testsrc}/$base.stdout ]; then
+		diff out.stdout ${testsrc}/$base.stdout
 		ret_stdout=$?
 	else
 		ret_stdout=0
 	fi
 
 	# check stderr for correctness
-	if [ -f $base.stderr ]; then
-		diff out.stderr $base.stderr
+	if [ -f ${testsrc}/$base.stderr ]; then
+		diff out.stderr ${testsrc}/$base.stderr
 		ret_stderr=$?
 	else
 		ret_stderr=0
