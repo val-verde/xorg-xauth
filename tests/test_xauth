@@ -25,7 +25,12 @@ for script in `ls -1 ${testsrc}/*.script | sort` ; do
 		diff out.stderr ${testsrc}/$base.stderr
 		ret_stderr=$?
 	else
-		ret_stderr=0
+		if [ -s out.stderr ] ; then
+			diff out.stderr /dev/null
+			ret_stderr=1
+		else
+			ret_stderr=0
+		fi
 	fi
 
 	if [ $ret_stdout -eq 0 -a $ret_stderr -eq 0 ]; then
