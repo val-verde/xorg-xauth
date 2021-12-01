@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = setup-sourced \
+             test_xauth \
              010-xauth-add-inet.script 010-xauth-add-inet.stdout \
              020-xauth-add-local.script  020-xauth-add-local.stdout \
              030-xauth-extract.script  030-xauth-extract.stdout \
@@ -9,5 +10,4 @@ EXTRA_DIST = setup-sourced \
 
 TESTS = test_xauth
 
-
-
+CLEANFILES = out.stderr out.stdout
