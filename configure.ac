@@ -25,7 +25,7 @@ AC_INIT([xauth],
 	[1.1.1],
 	[https://gitlab.freedesktop.org/xorg/app/xauth/issues],
 	[xauth])
-AM_INIT_AUTOMAKE([foreign dist-bzip2])
+AM_INIT_AUTOMAKE([foreign dist-xz])
 
 AC_CONFIG_HEADERS([config.h])
 
