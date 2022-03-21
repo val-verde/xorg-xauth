@@ -32,6 +32,7 @@ in this Software without prior written authorization from The Open Group.
 #ifdef WIN32
 #include <X11/Xwinsock.h>
 #define EPROTOTYPE WSAEPROTOTYPE
+typedef unsigned int in_addr_t;
 #endif
 #include <X11/X.h>
 #include <signal.h>
