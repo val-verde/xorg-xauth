@@ -197,6 +197,9 @@ struct addrlist *get_address_info (
 	    struct stat sbuf;
 	    int is_path_to_socket = 0;
 
+#ifdef _WIN32
+	    #define S_ISSOCK(m) 0
+#endif
 #ifdef HAVE_STRLCPY
 	    strlcpy(path, fulldpyname, sizeof(path));
 #else
