@@ -22,7 +22,7 @@ dnl Process this file with autoconf to create configure.
 
 AC_PREREQ([2.60])
 AC_INIT([xauth],
-	[1.1.1],
+	[1.1.2],
 	[https://gitlab.freedesktop.org/xorg/app/xauth/issues],
 	[xauth])
 AM_INIT_AUTOMAKE([foreign dist-xz])
